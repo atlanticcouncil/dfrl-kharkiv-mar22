@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Russian Strikes in Kharkiv, Ukraine - March 2022</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style>
+    #menu {
+        background: #fff;
+        position: relative;
+        z-index: 2;
+        width: 250px;
+        text-align: left;
+        font-family: 'Montserrat', sans-serif;
+        margin-bottom: 30px;
+    }
+
+    #menu a {
+        font-size: 13px;
+        color: #404040;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        text-align: left;
+        background: #e1e1e1;
+    }
+
+    #ac {
+      color: #005596;
+    }
+
+    #menu a::before {
+      content: "☐  ";
+    }
+
+    #menu a:last-child {
+        border: none;
+    }
+
+    #menu a:hover {
+        background-color: #f8f8f8;
+        color: #404040;
+    }
+
+    #menu a.active {
+        background-color: #3887be;
+        color: #ffffff;
+    }
+
+    #menu a.active::before {
+      content: "🗹  ";
+    }
+
+    #menu a.active:hover {
+        background: #3074a4;
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+font-weight: 700;
+font-size: 24px;
+line-height: 28px;
+padding: 0;
+margin: 0;
+}
+
+h2 {
+  font-family: 'Montserrat', sans-serif;
+  color: #747D82;
+  font-size:16px;
+  margin-top: 0;
+}
+
+h4.infobox-name {
+  font-size: 18px;
+  margin-top: 10px;
+  margin-bottom: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+h4.infobox-date {
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: inline;
+  font-family: 'Montserrat', sans-serif;
+}
+
+p.infobox-dateline {
+  margin: 0;
+  display:inline;
+  font-family: 'Montserrat', sans-serif;
+}
+
+#floatleft {
+  float: left;
+}
+
+#tagline {
+  vertical-align:middle;
+  color: #747D82;
+  font-family: 'Montserrat', sans-serif;
+      width: 270px;
+}
+
+.box {
+    background: #FFFFFF;
+    position:absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    border-radius: 4px;
+    padding: 16px;
+    box-shadow: 0 0px 16px rgb(0 0 0 / 48%);
+    font-family: 'Montserrat', sans-serif;
+}
+
+    .mapboxgl-popup-content {
+    position: relative;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+    padding: 10px 10px 15px;
+    pointer-events: auto;
+    width: 515px !important;
+    height:500px !important;
+    overflow-y: scroll !important;
+}
+
+.mapboxgl-popup-content strong {
+font-family: 'Montserrat', sans-serif;
+font-size: 24px;
+}
+
+.mapboxgl-popup-close-button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    border: 0;
+    border-radius: 25px;
+    cursor: pointer;
+    background-color: transparent;
+    /* height: 50px; */
+    /* width: 50px; */
+    font-size: 30px;
+    background: #ccc;
+}
+
+#mapInset {
+height: 180px;
+width:250px;
+max-width:100%;
+z-index: 1;
+opacity:1;
+pointer-events: none;
+border: solid .5px #ccc;
+}
+#mapInset .mapboxgl-ctrl-bottom-left{
+display: none;
+}
+
+</style>
+<div class="box"><h1>Russian strikes in Kharkiv</h1><h2>March 2 &dash; March 16, 2022</h2><hr /><div id="mapInset"></div><p id="tagline">Each red dot <img style="vertical-align: middle;" src="images/red-dot2.svg" height="20" width="20" /> represents a confirmed Russian strike. Click on a dot to learn more.<br />
+<!--<nav id="menu"><h4>Toggle map views</h4></nav>-->
+<p id="tagline">Data by <a id="ac" href="https://www.atlanticcouncil.org/programs/digital-forensic-research-lab/" target="_blank">Michael Sheldon/DFRLab</a><br />Map created by <a id="ac" href="https://www.paul-franz.com/" target="_blank">Paul Franz</a></p><hr />
+<img id="floatleft" src="images/ac-logo.png" /> <p id="tagline">&nbsp;&nbsp;<a id="ac" href="https://www.atlanticcouncil.org/" target="_blank">The Atlantic Council</a></p>
+</div>
+<div id="map"></div>
+
+<script>
+
+const bounds = [
+[32.741089,48.780820], // Southwest coordinates
+[39.725647,51.128706] // Northeast coordinates
+];
+
+
+	mapboxgl.accessToken = 'pk.eyJ1IjoiYXRsYW50aWNpc3QiLCJhIjoiY2s0OHB6bWFhMG5mZDNtb2N4bWFxYTdxbSJ9.SOL_A0sqNQ87CnPl7w4VPw';
+
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/atlanticist/cl1kry7a0000114mnwfq6wykm',
+        center: [36.231017, 50.004965], // starting position [lng, lat]
+        zoom: 9.5,
+        bearing:  17,
+        minZoom: 9.5,
+        maxBounds: bounds,
+        pitch: 30
+      });
+
+      const mapInset = new mapboxgl.Map({
+          container: 'mapInset',
+          style: 'mapbox://styles/atlanticist/cl1kryk2h000115qfguehsi2l',
+          center: [32.771, 48.872],
+          interactive: false,
+          zoom: 3,
+          attributionControl: false
+      });
+
+
+map.addControl(new mapboxgl.FullscreenControl());
+map.addControl(new mapboxgl.NavigationControl());
+
+    map.on('load', () => {
+
+        map.addSource('satimagery', {
+    'type': 'raster',
+    'url': 'mapbox://mapbox.satellite'
+    });
+
+    map.addLayer({
+    'id': 'Satellite data',
+    'source': 'satimagery',
+    'type': 'raster'
+    });
+
+
+        map.addSource('places', {
+        'type': 'geojson',
+        'data':{
+   "type": "FeatureCollection",
+   "features": [
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.366902,50.033872 ]
+    },
+    "properties": {
+    "name":"Apartment fire resumed",
+    "date":"March 6, 2022",
+    "websource1":"",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.328193,50.021033 ]
+    },
+    "properties": {
+    "name":"School 17",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/hueviykharkov/47518?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.235572,49.99937 ]
+    },
+    "properties": {
+    "name":"Near SBU building - Possible missile attack",
+    "date":"March 2, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39380",
+    "websource2":"This channel is now private to channel members only. https://t.me/c/1347456995/39375",
+    "websource3":"<iframe src='https://t.me/kharkov_now/10452?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.154531,49.9508 ]
+    },
+    "properties": {
+    "name":"Artillery attack",
+    "date":"March 2, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39371",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.23274,49.989843 ]
+    },
+    "properties": {
+    "name":"City council - Possible missile attack",
+    "date":"March 2, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39417",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.232715,49.990136 ]
+    },
+    "properties": {
+    "name":"City council - Fire",
+    "date":"March 2, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39420",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.169482,49.99084 ]
+    },
+    "properties": {
+    "name":"School 108 - rocket attack",
+    "date":"March 3, 2022",
+    "websource1":"",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.329352,50.017958 ]
+    },
+    "properties": {
+    "name":"Artillery attack",
+    "date":"March 2, 2022",
+    "websource1":"",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.232345,49.98966 ]
+    },
+    "properties": {
+    "name":"City council - civilian building hit",
+    "date":"March 2, 2022",
+    "websource1":"Footage deleted by channel. https://t.me/kharkov_now/10519",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.331245,50.017283 ]
+    },
+    "properties": {
+    "name":"Artillery attack - Studentska St.",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/hueviykharkov/47516?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.328158,50.021093 ]
+    },
+    "properties": {
+    "name":"Artillery hit - School 17",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/28607?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"This channel is now private to channel members only. https://t.me/c/1347456995/39424",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.403511,49.93799 ]
+    },
+    "properties": {
+    "name":"School 118 hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/place_kh/7848?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/hueviykharkov/47424?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.416322,49.93109 ]
+    },
+    "properties": {
+    "name":"School 75 hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/hueviykharkov/47406?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.409976,49.93541 ]
+    },
+    "properties": {
+    "name":"Apartments hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/hueviykharkov/47415?single&embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.17781,49.980844 ]
+    },
+    "properties": {
+    "name":"Klass mall hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/hueviykharkov/47434?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.176676,49.981577 ]
+    },
+    "properties": {
+    "name":"Klass mall - apartment building hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/hueviykharkov/47414?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.23784,50.004688 ]
+    },
+    "properties": {
+    "name":"Civilian home hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27889?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.239201,50.004257 ]
+    },
+    "properties": {
+    "name":"Civilian home hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27869?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.239029,50.004204 ]
+    },
+    "properties": {
+    "name":"Civilian home hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27854?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.202892,49.953571 ]
+    },
+    "properties": {
+    "name":"Factory hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27794?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.229618,50.003803 ]
+    },
+    "properties": {
+    "name":"Cluster munition rack",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27768?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.322021,50.008936 ]
+    },
+    "properties": {
+    "name":"Akademik pavlov - civilian house hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27752?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.321576,50.012488 ]
+    },
+    "properties": {
+    "name":"Civilian homes hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27710?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.231217,50.043938 ]
+    },
+    "properties": {
+    "name":"Failed attempt at hitting TV tower",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27670?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.153723,49.950228 ]
+    },
+    "properties": {
+    "name":"Damaged building",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27454?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.177437,49.981703 ]
+    },
+    "properties": {
+    "name":"Klass mall, market hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27413?single&embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.166308,49.976846 ]
+    },
+    "properties": {
+    "name":"Cadet corps - civilian buildings damaged",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27413?single&embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.176387,49.980556 ]
+    },
+    "properties": {
+    "name":"Damage to civilian buildings",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/27379?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.256535,49.970519 ]
+    },
+    "properties": {
+    "name":"Apartment building hit",
+    "date":"March 2, 2022",
+    "websource1":"",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.341707,50.033198 ]
+    },
+    "properties": {
+    "name":"Autoshop hit",
+    "date":"March 2, 2022",
+    "websource1":"<iframe src='https://t.me/c/1347456995/39483?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.358738,50.032452 ]
+    },
+    "properties": {
+    "name":"Apartment building hit",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28281?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.240805,50.025933 ]
+    },
+    "properties": {
+    "name":"Smerch booster impact",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28701?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.253645,50.031743 ]
+    },
+    "properties": {
+    "name":"Likely cluster strike",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28721?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.369059,50.03815 ]
+    },
+    "properties": {
+    "name":"Apartment hit",
+    "date":"March 3, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39544",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.365882,50.033764 ]
+    },
+    "properties": {
+    "name":"Apartments smoking (general area)",
+    "date":"March 3, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39544",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.364002,50.028917 ]
+    },
+    "properties": {
+    "name":"Fires (general area)",
+    "date":"March 3, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39550",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.308865,50.011211 ]
+    },
+    "properties": {
+    "name":"Fire",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28729?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.257713,50.025638 ]
+    },
+    "properties": {
+    "name":"Damage at aircraft factory",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28713?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.012127,49.968972 ]
+    },
+    "properties": {
+    "name":"Korotich airfield",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28698?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.277772,50.048262 ]
+    },
+    "properties": {
+    "name":"Apartments damaged",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28620?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.418912,49.934754 ]
+    },
+    "properties": {
+    "name":"Civilian buildings damaged",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28547?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.415367,49.934164 ]
+    },
+    "properties": {
+    "name":"Impact",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28342?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.355015,50.023102 ]
+    },
+    "properties": {
+    "name":"Building burning near school",
+    "date":"March 3, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/28914?single&embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.350042,50.039158 ]
+    },
+    "properties": {
+    "name":"158 School",
+    "date":"March 4, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39683",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.237741,50.004436 ]
+    },
+    "properties": {
+    "name":"Shelling at city center",
+    "date":"March 4, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39661",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.284618,50.033757 ]
+    },
+    "properties": {
+    "name":"Kommunar hit",
+    "date":"March 4, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39630",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.31191,50.013387 ]
+    },
+    "properties": {
+    "name":"Apartment hit (possibly March 3)",
+    "date":"March 4, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39615",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.363946,50.030618 ]
+    },
+    "properties": {
+    "name":"Tram depot hit (Possibly March 3)",
+    "date":"March 4, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39708",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.155682,49.944894 ]
+    },
+    "properties": {
+    "name":"Apartment hit",
+    "date":"March 4, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/29639?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.335632,50.025311 ]
+    },
+    "properties": {
+    "name":"Market hit",
+    "date":"March 4, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/29644?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.25474,49.934082 ]
+    },
+    "properties": {
+    "name":"Damage",
+    "date":"March 4, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/29669?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.360228,50.042229 ]
+    },
+    "properties": {
+    "name":"Apartment facade blown off",
+    "date":"March 5, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39814",
+    "websource2":"<iframe src='https://t.me/truexanewsua/30103?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.34824,50.031484 ]
+    },
+    "properties": {
+    "name":"Fire",
+    "date":"March 5, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39810",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.2188,50.024619 ]
+    },
+    "properties": {
+    "name":"Damage",
+    "date":"March 5, 2022",
+    "websource1":"The footage is now private to channel members only. https://t.me/c/1347456995/39792",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.362623,50.023697 ]
+    },
+    "properties": {
+    "name":"Hospital hit",
+    "date":"March 5, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/29891?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.36586,50.034022 ]
+    },
+    "properties": {
+    "name":"Buildings hit",
+    "date":"March 5, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/29929?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.369453,50.034497 ]
+    },
+    "properties": {
+    "name":"Apartment hit",
+    "date":"March 5, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/29932?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.357417,50.041916 ]
+    },
+    "properties": {
+    "name":"Damage",
+    "date":"March 5, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/29944?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.251635,49.988473 ]
+    },
+    "properties": {
+    "name":"Prosecutor General for Kharkiv Oblast",
+    "date":"March 6, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30316?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.244692,49.988279 ]
+    },
+    "properties": {
+    "name":"Buildings hit",
+    "date":"March 6, 2022",
+    "websource1":"",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.256614,50.09 ]
+    },
+    "properties": {
+    "name":"Civilians killed and injured at market",
+    "date":"March 6, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30300?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.278826,50.009507 ]
+    },
+    "properties": {
+    "name":"Damage to dorms (again)",
+    "date":"March 6, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30211?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/30024?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.19757,49.982803 ]
+    },
+    "properties": {
+    "name":"Military buildings hit, prison affected.",
+    "date":"March 6, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30200?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.094059,49.963685 ]
+    },
+    "properties": {
+    "name":"Grad(?) booster landed in civilian area",
+    "date":"March 6, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30180?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.36945,50.034608 ]
+    },
+    "properties": {
+    "name":"Apartments still burning",
+    "date":"March 6, 2022",
+    "websource1":"",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.358144,50.04152 ]
+    },
+    "properties": {
+    "name":"Kindergarten hit (possibly March 5)",
+    "date":"March 6, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30061?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.293345,50.05671 ]
+    },
+    "properties": {
+    "name":"Fire (general area)",
+    "date":"March 6, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30055?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.218799,50.025052 ]
+    },
+    "properties": {
+    "name":"Damage to apartment building (possibly March 6)",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30413?single&embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.352565,50.031357 ]
+    },
+    "properties": {
+    "name":"Damage to apartment building",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30437?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.359923,50.04209 ]
+    },
+    "properties": {
+    "name":"Apartment building damaged and burnt down",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30440?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.369988,49.937803 ]
+    },
+    "properties": {
+    "name":"Damage to civilian housing",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30442?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.235773,50.000235 ]
+    },
+    "properties": {
+    "name":"University building hit",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30450 ?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.197358,50.059115 ]
+    },
+    "properties": {
+    "name":"Damage to apartment building",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30451?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.174177,50.036109 ]
+    },
+    "properties": {
+    "name":"Artillery impacts",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30456?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.240324,50.00682 ]
+    },
+    "properties": {
+    "name":"Damage to civilian buildings (March 5 or 6?)",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30458?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.23,50.034922 ]
+    },
+    "properties": {
+    "name":"Apartment buildings destroyed",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30473?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/30607?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"<iframe src='https://t.me/truexanewsua/30678?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.201601,50.06167 ]
+    },
+    "properties": {
+    "name":"Damage to apartment buildings",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30468?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/30629?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.226621,50.040943 ]
+    },
+    "properties": {
+    "name":"Damage to apartment buildings, school",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30480?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/31279?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.234138,50.011436 ]
+    },
+    "properties": {
+    "name":"Damage to civilian building",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30491?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.239973,50.006523 ]
+    },
+    "properties": {
+    "name":"Damage throughout city center",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30516?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.279066,50.044905 ]
+    },
+    "properties": {
+    "name":"Apartments burnt out",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30517?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/30554?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.245573,49.989595 ]
+    },
+    "properties": {
+    "name":"Damage to civilian area",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30574?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.246704,49.988237 ]
+    },
+    "properties": {
+    "name":"Heavy damage to civilian buildings",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30463 ?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/30577?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"<iframe src='https://t.me/truexanewsua/30692?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.351651,49.980607 ]
+    },
+    "properties": {
+    "name":"Artillery impacts",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30590?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.36013,49.980631 ]
+    },
+    "properties": {
+    "name":"Artillery damage, fire in apartment",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30595?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/30708?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.23584,49.998488 ]
+    },
+    "properties": {
+    "name":"Church damaged",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30698?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.195154,50.058564 ]
+    },
+    "properties": {
+    "name":"Damage to student housing",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30745?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.354245,49.982291 ]
+    },
+    "properties": {
+    "name":"Impacts near school",
+    "date":"March 7, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30770?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.343664,50.035563 ]
+    },
+    "properties": {
+    "name":"Heavy damage",
+    "date":"March 8, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31083?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.197957,50.041317 ]
+    },
+    "properties": {
+    "name":"Damage to houses",
+    "date":"March 8, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30871?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.199885,50.042711 ]
+    },
+    "properties": {
+    "name":"Playground hit",
+    "date":"March 8, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30871?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.202443,50.047689 ]
+    },
+    "properties": {
+    "name":"Damage to apartment buildings and playground",
+    "date":"March 8, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/30883?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.332646,49.957834 ]
+    },
+    "properties": {
+    "name":"Smerch booster impact",
+    "date":"March 8, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31014?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.34878,50.031685 ]
+    },
+    "properties": {
+    "name":"Fire in apartment building",
+    "date":"March 9, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31148?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.347648,50.033442 ]
+    },
+    "properties": {
+    "name":"Fire in apartment building",
+    "date":"March 9, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31148?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.245244,50.008539 ]
+    },
+    "properties": {
+    "name":"Shell hit road, hit water main",
+    "date":"March 10, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31494?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.447946,49.893775 ]
+    },
+    "properties": {
+    "name":"Attack on university",
+    "date":"March 10, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31535?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.234406,49.99158 ]
+    },
+    "properties": {
+    "name":"Nikolsky Mall hit",
+    "date":"March 10, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31543?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.323091,50.024884 ]
+    },
+    "properties": {
+    "name":"Impacts at apartment building",
+    "date":"March 10, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31626?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.200423,50.05275 ]
+    },
+    "properties": {
+    "name":"Impact at school (likely March 9)",
+    "date":"March 10, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31968?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.252007,50.092348 ]
+    },
+    "properties": {
+    "name":"Damage to Physical-Technical Institute (March 6)",
+    "date":"March 11, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/31901?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.360682,49.98749 ]
+    },
+    "properties": {
+    "name":"Hospital damaged",
+    "date":"March 12, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/30254?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.408356,49.929356 ]
+    },
+    "properties": {
+    "name":"ATB, apartment buildings damaged",
+    "date":"March 12, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/30534?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/32962?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.364064,49.988403 ]
+    },
+    "properties": {
+    "name":"Apartment building damaged",
+    "date":"March 12, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32218?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/32292?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.278502,49.984166 ]
+    },
+    "properties": {
+    "name":"Artillery impacts, restaurant destroyed",
+    "date":"March 12, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32320?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.329383,50.052489 ]
+    },
+    "properties": {
+    "name":"House burning",
+    "date":"March 13, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32615?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.329748,50.050733 ]
+    },
+    "properties": {
+    "name":"House destroyed",
+    "date":"March 13, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/30578?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.419244,49.935159 ]
+    },
+    "properties": {
+    "name":"Direct hit on apartment building",
+    "date":"March 13, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32628?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.412608,49.930894 ]
+    },
+    "properties": {
+    "name":"Artillery impacts",
+    "date":"March 13, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32643?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.427712,49.93302 ]
+    },
+    "properties": {
+    "name":"Apartments hit by artillery",
+    "date":"March 13, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32674?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.362945,50.039354 ]
+    },
+    "properties": {
+    "name":"Artillery fire on apartments",
+    "date":"March 13, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32727?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/32954?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.414488,49.937243 ]
+    },
+    "properties": {
+    "name":"Apartment building hit",
+    "date":"March 13, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32767?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.238562,50.003441 ]
+    },
+    "properties": {
+    "name":"Apartment building hit",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/30646?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.357746,49.985491 ]
+    },
+    "properties": {
+    "name":"School area damaged",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/30698?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.243848,50.008947 ]
+    },
+    "properties": {
+    "name":"Residential buildings damaged",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/30716?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.360792,49.990597 ]
+    },
+    "properties": {
+    "name":"Gym damaged",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/30736?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.418815,49.934048 ]
+    },
+    "properties": {
+    "name":"Residential buildings hit, blood on ground, likely March 13",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/livekharkov/30772?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.343669,49.960235 ]
+    },
+    "properties": {
+    "name":"Impacts in residential area",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32926?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.354019,50.031396 ]
+    },
+    "properties": {
+    "name":"Apartment buildings hit, allegedly cluster munitions",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/32980?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.343928,49.960898 ]
+    },
+    "properties": {
+    "name":"Damage to apartment buildings",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33031?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.352174,49.985147 ]
+    },
+    "properties": {
+    "name":"Artillery impacts in residential area",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33083?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.209555,50.071548 ]
+    },
+    "properties": {
+    "name":"Apartment building hit",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33106?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.283254,50.037985 ]
+    },
+    "properties": {
+    "name":"Apartment building hit",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33120?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.246948,50.015565 ]
+    },
+    "properties": {
+    "name":"Artillery impacts",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33127?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.417934,49.930766 ]
+    },
+    "properties": {
+    "name":"Apartment buildings hit",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33143?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.358531,50.00477 ]
+    },
+    "properties": {
+    "name":"Water infrastructure destroyed",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33205?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.347972,49.960263 ]
+    },
+    "properties": {
+    "name":"Cluster munition impact",
+    "date":"March 14, 2022",
+    "websource1":"<iframe src='https://t.me/hueviykharkov/49848?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.239923,49.982422 ]
+    },
+    "properties": {
+    "name":"Store destroyed, area damaged",
+    "date":"March 15, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33262?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/33269?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.236824,49.98276 ]
+    },
+    "properties": {
+    "name":"Apartment buildings hit",
+    "date":"March 15, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33268?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.229476,49.973159 ]
+    },
+    "properties": {
+    "name":"Impact in residential area, school damaged (date unknown)",
+    "date":"March 15, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33276?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.408558,49.932838 ]
+    },
+    "properties": {
+    "name":"House burning (date unknown)",
+    "date":"March 15, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33308?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.347561,49.954278 ]
+    },
+    "properties": {
+    "name":"Direct hit on apartment building",
+    "date":"March 15, 2022",
+    "websource1":"https://www.sq.com.ua/rus/novosti/15.03.2022/v-xarkove-pryamym-popadaniem-razrusen-ziloi-dom",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.223459,49.993573 ]
+    },
+    "properties": {
+    "name":"MLRS cargo section",
+    "date":"March 15, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33345?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.245021,49.983396 ]
+    },
+    "properties": {
+    "name":"Bank damaged",
+    "date":"March 15, 2022",
+    "websource1":"",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.231608,49.999019 ]
+    },
+    "properties": {
+    "name":"MLRS boosters landed on theatre roof",
+    "date":"March 15, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33426?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.220484,49.992872 ]
+    },
+    "properties": {
+    "name":"Artillery impacts",
+    "date":"March 15, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33438?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.354652,49.98278 ]
+    },
+    "properties": {
+    "name":"Two dead (graphic)",
+    "date":"March 16, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33572?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"<iframe src='https://t.me/truexanewsua/33610?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.328066,49.983313 ]
+    },
+    "properties": {
+    "name":"House on fire",
+    "date":"March 16, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33596?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.323825,49.98509 ]
+    },
+    "properties": {
+    "name":"Apartment building hit",
+    "date":"March 16, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33596?single?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.339127,49.98906 ]
+    },
+    "properties": {
+    "name":"Artillery impacts",
+    "date":"March 16, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33599?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.343825,49.957441 ]
+    },
+    "properties": {
+    "name":"Impact in residential area (date unclear)",
+    "date":"March 16, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33627?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.34006,50.023501 ]
+    },
+    "properties": {
+    "name":"Fire",
+    "date":"March 16, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33657?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 36.251561,49.935769 ]
+    },
+    "properties": {
+    "name":"School 35 destroyed",
+    "date":"March 16, 2022",
+    "websource1":"<iframe src='https://t.me/truexanewsua/33738?embed=1' scrolling='no' frameborder='0' width='100%' height='600'></iframe>",
+    "websource2":"",
+    "websource3":"",
+    "icon":"red-dot2"
+    }
+  }
+]
+}
+      });
+
+      map.addLayer({
+        'id': 'places',
+        'type': 'symbol',
+        'source': 'places',
+        'layout': {
+        'icon-image': '{icon}',
+        'icon-allow-overlap': true
+      }
+      });
+
+    });
+
+    map.on('click', 'places', (e) => {
+map.flyTo({
+center: e.features[0].geometry.coordinates
+});
+});
+
+    // After the last frame rendered before the map enters an "idle" state.
+  //
+
+    map.on('click', 'places', (e) => {
+    // Copy coordinates array.
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const name = e.features[0].properties.name;
+    const date = e.features[0].properties.date;
+    const websource1 = e.features[0].properties.websource1;
+    const websource2 = e.features[0].properties.websource2;
+    const websource3 = e.features[0].properties.websource3;
+
+    // Ensure that if the map is zoomed out such that multiple
+    // copies of the feature are visible, the popup appears
+    // over the copy being pointed to.
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    new mapboxgl.Popup()
+    .setLngLat(coordinates)
+    .setHTML('<h4 class="infobox-name">' + name + '</h4><h4 class="infobox-date">Date: </h4><p class="infobox-dateline">' + date + '</p><br /><hr />' + websource1 + websource2 + websource3)
+    .addTo(map);
+    });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.on('mouseenter', 'places', () => {
+    map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'places', () => {
+    map.getCanvas().style.cursor = '';
+    });
+
+</script>
+
+</body>
+</html>
